@@ -192,6 +192,15 @@ those should not affect the results significantly.
     reconstruction = model(output_flow, forward=False)
     # flow is a tuple of three tensors
     x, logdet, z = flow
+    
+    # Initialize actnorm layers with Data Dependent Initialization (DDI)
+    sess.run(tf.global_variables_initializer())
+    nets.initialize_actnorms(
+       sess,
+        feed_dict_fn=lambda: {beta_ph: 1.0},
+        actnorm_layers=actnorm_layers,
+        num_steps=10,
+)
     ```
 * Then define the cost and the optimizer and train model.
 * `actnorm_layers` contains a list of `ActnormLayer's` and can be used
